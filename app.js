@@ -12,7 +12,7 @@ require('./config/passport')(passport);
 
 const db = require('./config/keys').mongoURL;
 mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('MongoDB connected'));
+    .then(() => console.log('MongoDB connected'))
     .catch(err => console.log(err))
 app.use(expresslayout);
 app.use(express.json())
