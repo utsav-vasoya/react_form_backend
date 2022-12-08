@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const User = require('../models/users');
-const passport = require('passport');
 
 router.post('/register', (req, res) => {
     const { name, email, password, confirmPassword } = req.body;
@@ -43,15 +42,31 @@ router.post('/register', (req, res) => {
 })
 
 
-router.post('/login', (req, res, next) => {
-    passport.authenticate('local', {
-        successRedirect: '/dashboard',
-        failureRedirect: '/users/login',
-        failureFlash: true
-    })(req, res, next);
+router.post('/login', (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+        return res.send({ msg: "Please Enter All Fields. " })
+    }
+    if (password.length < 6) {
+        return res.send({ msg: 'Password must be at least 6 characters.' });
+    } else {
+        User.findOne({ email: req.body.email })
+            .then(user => {
+                if (!user) {
+                    return res.send({ msg: 'That email is not registered.' });
+                }
+                bcrypt.compare(req.body.password, user.password, (err, isMatch) => {
+                    if (err) throw err;
+                    if (isMatch) {
+                        return res.send(user);
+                    } else {
+                        return res.send({ msg: 'Password incorrect.' });
+                    }
+                });
+            });
+    }
 });
 
-// Logout
 router.get('/logout', (req, res) => {
     req.logout();
     req.flash('success_msg', 'You are logged out');
