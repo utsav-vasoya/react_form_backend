@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const User = require('../models/users');
-
+const passport = require("passport");
+const jwt = require('jsonwebtoken');
 router.post('/register', (req, res) => {
     const { name, email, password, confirmPassword } = req.body;
     if (!name || !email || !password || !confirmPassword) {
@@ -58,6 +59,14 @@ router.post('/login', (req, res) => {
                 bcrypt.compare(req.body.password, user.password, (err, isMatch) => {
                     if (err) throw err;
                     if (isMatch) {
+                        const token = jwt.sign(
+                            { user_id: user._id },
+                            "abcdefghijklo",
+                            {
+                                expiresIn: "24h",
+                            }
+                        );
+                        user.token = token;
                         return res.send(user);
                     } else {
                         return res.send({ msg: 'Password incorrect.' });
@@ -67,9 +76,12 @@ router.post('/login', (req, res) => {
     }
 });
 
-router.get('/logout', (req, res) => {
-    req.logout();
-    req.flash('success_msg', 'You are logged out');
-    res.redirect('/users/login');
-});
+router.get('/home', passport.authenticate('jwt', { session: false }), (req, res) => {
+    if (req.user) {
+        return res.send("verify")
+    } else {
+        return res.send({ msg: "err....." })
+    }
+})
+
 module.exports = router;
