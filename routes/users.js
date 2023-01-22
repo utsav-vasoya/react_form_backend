@@ -76,6 +76,23 @@ router.post('/login', (req, res) => {
     }
 });
 
+router.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
+router.get('/auth/google/callback', passport.authenticate('google', { session: false }), (req, res, next) => {
+    console.log(req.user, req.isAuthenticated());
+    if (req.isAuthenticated()) {
+        jwt.sign({ user: req.user }, "secretKey", { expiresIn: "1h" }, (err, token) => {
+            if (err) {
+                return res.send({ msg: { token: null } });
+            }
+            res.cookie('auth', token);
+            res.send("Welcome")
+        })
+    } else {
+        res.send({ msg: 'Unauthorized' });
+    }
+})
+
 router.get('/home', passport.authenticate('jwt', { session: false }), (req, res) => {
     if (req.user) {
         return res.send("verify")
