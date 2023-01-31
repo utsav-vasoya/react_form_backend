@@ -20,6 +20,7 @@
     "express-session": "^1.17.2",
     "jade": "^1.11.0",
     "jsonwebtoken": "^8.5.1",
+    "localStorage": "^1.0.4",
     "mongoose": "^5.13.5",
     "passport": "^0.4.1",
     "passport-google-oauth2": "^0.2.0",

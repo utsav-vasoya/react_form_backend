@@ -85,8 +85,8 @@ router.get('/auth/google/callback', passport.authenticate('google', { session: f
             if (err) {
                 return res.send({ msg: { token: null } });
             }
-            res.cookie('auth', token);
-            res.send("Welcome")
+            res.cookie('dataKey', token);
+            res.redirect("http://localhost:3006/home")
         })
     } else {
         res.send({ msg: 'Unauthorized' });
