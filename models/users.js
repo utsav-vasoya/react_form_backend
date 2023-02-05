@@ -16,12 +16,12 @@ const Userschema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    token:{
+    token: {
         type: String
     },
-    login_type:{
-        type:String,
-        default:"Custom"
+    login_type: {
+        type: String,
+        default: "Custom"
     }
 })
 

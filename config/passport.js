@@ -2,7 +2,7 @@ const User = require('../models/users');
 const GoogleStrategy = require("passport-google-oauth2").Strategy;
 
 module.exports = (passport) => {
-    passport.use(new GoogleStrategy({
+    passport.use('google', new GoogleStrategy({
         clientID: "612292622863-od24d7805hqi7q9ih0lbaqtvo2blkkku.apps.googleusercontent.com",
         clientSecret: "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",
         callbackURL: 'http://localhost:4000/users/auth/google/callback'
